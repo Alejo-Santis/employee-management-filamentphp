@@ -9,12 +9,14 @@ class Timesheet extends Model
 {
     use HasFactory;
 
-    public function user(): BelongsTo
+    protected $guarded = [];
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function calendar(): BelongsTo
+    public function calendar()
     {
         return $this->belongsTo(Calendar::class);
     }
