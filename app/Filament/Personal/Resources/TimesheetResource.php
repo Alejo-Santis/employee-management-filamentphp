@@ -3,7 +3,6 @@
 namespace App\Filament\Personal\Resources;
 
 use App\Filament\Personal\Resources\TimesheetResource\Pages;
-use App\Filament\Personal\Resources\TimesheetResource\RelationManagers;
 use App\Models\Timesheet;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,7 +22,7 @@ class TimesheetResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('user_id', Auth::user()->id);
+        return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->orderBy('id', 'desc');
     }
 
     public function getRedirectUrl(): string

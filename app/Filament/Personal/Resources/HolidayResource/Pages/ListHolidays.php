@@ -13,7 +13,10 @@ class ListHolidays extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('New Holiday')
+                ->color('primary')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }
