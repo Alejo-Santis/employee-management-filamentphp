@@ -56,57 +56,39 @@ class PersonalWidgetStats extends BaseWidget
 
     protected function getTotalWork(User $user)
     {
-        $totalMinutes = 0;
-
-        // Obtener todas las entradas de trabajo del usuario
-        $workTimesheets = Timesheet::where('user_id', $user->id)
+        $timesheets = Timesheet::where('user_id', $user->id)
             ->where('type', 'work')
+            ->whereDate('created_at', Carbon::today())
             ->get();
+        $sumSeconds = 0;
+        foreach ($timesheets as $timesheet) {
+            $startTime = Carbon::parse($timesheet->day_in);
+            $finishTime = Carbon::parse($timesheet->day_out);
 
-        foreach ($workTimesheets as $timesheet) {
-            $dayIn = Carbon::parse($timesheet->day_in);
-
-            // Si hay day_out, calculamos la diferencia
-            if ($timesheet->day_out) {
-                $dayOut = Carbon::parse($timesheet->day_out);
-                $totalMinutes += $dayIn->diffInMinutes($dayOut);
-            } else {
-                // Si no hay day_out y la sesión está activa, calculamos hasta ahora
-                $totalMinutes += $dayIn->diffInMinutes(now());
-            }
+            $totalDuration = $finishTime->diffInSeconds($startTime);
+            $sumSeconds += $totalDuration;
         }
+        $formatTime = gmdate('H:i:s', $sumSeconds);
 
-        $hours = intdiv($totalMinutes, 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return $formatTime;
     }
 
     protected function getTotalPause(User $user)
     {
-        $totalMinutes = 0;
-
-        // Obtener todas las entradas de pausa del usuario
-        $pauseTimesheets = Timesheet::where('user_id', $user->id)
+        $timesheets = Timesheet::where('user_id', $user->id)
             ->where('type', 'pause')
+            ->whereDate('created_at', Carbon::today())
             ->get();
+        $sumSeconds = 0;
+        foreach ($timesheets as $timesheet) {
+            $startTime = Carbon::parse($timesheet->day_in);
+            $finishTime = Carbon::parse($timesheet->day_out);
 
-        foreach ($pauseTimesheets as $timesheet) {
-            $dayIn = Carbon::parse($timesheet->day_in);
-
-            // Si hay day_out, calculamos la diferencia
-            if ($timesheet->day_out) {
-                $dayOut = Carbon::parse($timesheet->day_out);
-                $totalMinutes += $dayIn->diffInMinutes($dayOut);
-            } else {
-                // Si no hay day_out y la pausa está activa, calculamos hasta ahora
-                $totalMinutes += $dayIn->diffInMinutes(now());
-            }
+            $totalDuration = $finishTime->diffInSeconds($startTime);
+            $sumSeconds += $totalDuration;
         }
+        $formatTime = gmdate('H:i:s', $sumSeconds);
 
-        $hours = intdiv($totalMinutes, 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return $formatTime;
     }
 }
