@@ -21,6 +21,30 @@ class HolidayResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::user()->id)
+            ->where('type', 'pending')
+            ->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::user()->id)
+            ->where('type', 'pending')
+            ->count() > 0 ? 'warning' : 'primary';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::user()->id)
+            ->where('type', 'pending')
+            ->count() > 1 ? 'You have multiple pending holidays' : 'You have a pending holiday';
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('user_id', Auth::user()->id);

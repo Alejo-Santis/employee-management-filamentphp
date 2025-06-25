@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -17,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Shanerbaner82\PanelRoles\PanelRoles;
 
 class DashboardPanelProvider extends PanelProvider
 {
@@ -26,6 +28,9 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandLogo(asset('assets/images/banner.png'))
+            ->brandLogoHeight('100px')
+            ->favicon(asset('assets/images/banner.png'))
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -54,6 +59,21 @@ class DashboardPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                PanelRoles::make()
+                    ->roleToAssign('super_admin')
+                    ->restrictedRoles(['super_admin'])
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Personal')
+                    ->url('/personal')
+                    ->icon('heroicon-o-user')
+                    ->visible(fn(): bool => auth()->user()?->hasAnyRole([
+                        'super_admin',
+                    ])),
+            ]);;
     }
 }
