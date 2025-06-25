@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use Shanerbaner82\PanelRoles\PanelRoles;
 
 class DashboardPanelProvider extends PanelProvider
@@ -64,7 +65,7 @@ class DashboardPanelProvider extends PanelProvider
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 PanelRoles::make()
                     ->roleToAssign('super_admin')
-                    ->restrictedRoles(['super_admin'])
+                    ->restrictedRoles(['super_admin']),
             ])
             ->userMenuItems([
                 MenuItem::make()
